@@ -145,7 +145,7 @@ static NSString * CBBase64EncodedStringFromData(NSData *data) {
 
     [_productsHTTPClient.operationQueue addOperation:operation];
 }
-
+#if TARGET_OS_IPHONE
 - (void)verifyTransaction:(SKPaymentTransaction *)transaction
                   success:(void (^)(NSDictionary *receipt))success
                   failure:(void (^)(NSError *error))failure
@@ -175,7 +175,7 @@ static NSString * CBBase64EncodedStringFromData(NSData *data) {
         }
     }];
 }
-
+#endif
 - (void)setPaymentQueueUpdatedTransactionsBlock:(void (^)(SKPaymentQueue *queue, NSArray *transactions))block {
     _paymentQueueTransactionsUpdated = [block copy];
 }
