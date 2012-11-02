@@ -44,6 +44,14 @@
                     failure:(void (^)(NSError *error))failure;
 
 ///-------------------------------
+/// @name Product Purchase
+///-------------------------------
+
+- (BOOL)purchaseProduct:(SKProduct *)product;
+
+- (void)finishTransaction:(SKPaymentTransaction *)transaction;
+
+///-------------------------------
 /// @name Transaction Verification
 ///-------------------------------
 #if TARGET_OS_IPHONE

@@ -125,6 +125,25 @@ static NSString * CBBase64EncodedStringFromData(NSData *data) {
     [request start];
 }
 
+- (BOOL)purchaseProduct:(SKProduct *)product
+{
+    BOOL addedPurchaseSuccessfully=NO;
+    
+    if ([SKPaymentQueue canMakePayments]) {
+        SKPayment *payment = [SKPayment paymentWithProduct:product];
+        [[SKPaymentQueue defaultQueue] addPayment:payment];
+        
+        addedPurchaseSuccessfully=YES;
+    }
+    
+    return addedPurchaseSuccessfully;
+}
+
+- (void)finishTransaction:(SKPaymentTransaction *)transaction
+{
+    [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
+}
+
 - (void)productsWithRequest:(NSURLRequest *)request
                     success:(void (^)(NSArray *products, NSArray *invalidIdentifiers))success
                     failure:(void (^)(NSError *error))failure
