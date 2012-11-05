@@ -54,11 +54,11 @@
 ///-------------------------------
 /// @name Transaction Verification
 ///-------------------------------
-#if TARGET_OS_IPHONE
+
 - (void)verifyTransaction:(SKPaymentTransaction *)transaction
                   success:(void (^)(NSDictionary *receipt))success
                   failure:(void (^)(NSError *error))failure;
-#endif
+
 ///--------------------------------------------------
 /// @name Transaction Queue Observer Delegate Methods
 ///--------------------------------------------------

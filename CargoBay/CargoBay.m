@@ -164,7 +164,7 @@ static NSString * CBBase64EncodedStringFromData(NSData *data) {
 
     [_productsHTTPClient.operationQueue addOperation:operation];
 }
-#if TARGET_OS_IPHONE
+
 - (void)verifyTransaction:(SKPaymentTransaction *)transaction
                   success:(void (^)(NSDictionary *receipt))success
                   failure:(void (^)(NSError *error))failure
@@ -173,6 +173,7 @@ static NSString * CBBase64EncodedStringFromData(NSData *data) {
         return;
     }
     
+#if TARGET_OS_IPHONE
     [_receiptVerificationClient getPath:@"verifyReceipt" parameters:[NSDictionary dictionaryWithObject:CBBase64EncodedStringFromData(transaction.transactionReceipt) forKey:@"receipt-data"] success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSInteger status = [[responseObject valueForKey:@"status"] integerValue];
         if (status == 0) {
@@ -193,8 +194,13 @@ static NSString * CBBase64EncodedStringFromData(NSData *data) {
             failure(error);
         }
     }];
-}
+#else
+#pragma mark TODO: Add verification code for OS X.
+    NSDictionary *receipt = [NSDictionary dictionary];
+    success(receipt);
 #endif
+}
+
 - (void)setPaymentQueueUpdatedTransactionsBlock:(void (^)(SKPaymentQueue *queue, NSArray *transactions))block {
     _paymentQueueTransactionsUpdated = [block copy];
 }
