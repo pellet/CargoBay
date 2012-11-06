@@ -152,41 +152,41 @@ static NSString * CBBase64EncodedStringFromData(NSData *data) {
 //    [_productsHTTPClient.operationQueue addOperation:operation];
 //}
 
-- (void)verifyTransaction:(SKPaymentTransaction *)transaction
-                  success:(void (^)(NSDictionary *receipt))success
-                  failure:(void (^)(NSError *error))failure
-{
-    if (transaction.transactionState != SKPaymentTransactionStatePurchased) {
-        return;
-    }
-    
-#if TARGET_OS_IPHONE
-    [_receiptVerificationClient getPath:@"verifyReceipt" parameters:[NSDictionary dictionaryWithObject:CBBase64EncodedStringFromData(transaction.transactionReceipt) forKey:@"receipt-data"] success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        NSInteger status = [[responseObject valueForKey:@"status"] integerValue];
-        if (status == 0) {
-            if (success) {
-                NSDictionary *receipt = [responseObject valueForKey:@"receipt"];
-                success(receipt);
-            }
-        } else {
-            if (failure) {
-                NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[responseObject valueForKey:@"exception"] forKey:NSLocalizedFailureReasonErrorKey];
-                
-                NSError *error = [[NSError alloc] initWithDomain:CargoBarErrorDomain code:status userInfo:userInfo];
-                failure(error);
-            }
-        }
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        if (failure) {
-            failure(error);
-        }
-    }];
-#else
-#pragma mark TODO: Add verification code for OS X.
-    NSDictionary *receipt = [NSDictionary dictionary];
-    success(receipt);
-#endif
-}
+//- (void)verifyTransaction:(SKPaymentTransaction *)transaction
+//                  success:(void (^)(NSDictionary *receipt))success
+//                  failure:(void (^)(NSError *error))failure
+//{
+//    if (transaction.transactionState != SKPaymentTransactionStatePurchased) {
+//        return;
+//    }
+//    
+//#if TARGET_OS_IPHONE
+//    [_receiptVerificationClient getPath:@"verifyReceipt" parameters:[NSDictionary dictionaryWithObject:CBBase64EncodedStringFromData(transaction.transactionReceipt) forKey:@"receipt-data"] success:^(AFHTTPRequestOperation *operation, id responseObject) {
+//        NSInteger status = [[responseObject valueForKey:@"status"] integerValue];
+//        if (status == 0) {
+//            if (success) {
+//                NSDictionary *receipt = [responseObject valueForKey:@"receipt"];
+//                success(receipt);
+//            }
+//        } else {
+//            if (failure) {
+//                NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[responseObject valueForKey:@"exception"] forKey:NSLocalizedFailureReasonErrorKey];
+//                
+//                NSError *error = [[NSError alloc] initWithDomain:CargoBarErrorDomain code:status userInfo:userInfo];
+//                failure(error);
+//            }
+//        }
+//    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+//        if (failure) {
+//            failure(error);
+//        }
+//    }];
+//#else
+//#pragma mark TODO: Add verification code for OS X.
+//    NSDictionary *receipt = [NSDictionary dictionary];
+//    success(receipt);
+//#endif
+//}
 
 - (void)setPaymentQueueUpdatedTransactionsBlock:(void (^)(SKPaymentQueue *queue, NSArray *transactions))block {
     _paymentQueueTransactionsUpdated = [block copy];

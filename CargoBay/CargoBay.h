@@ -69,9 +69,9 @@ typedef void (^CargoBayPaymentQueueRestoreFailureBlock)(SKPaymentQueue *queue, N
 /// @name Transaction Verification
 ///-------------------------------
 
-- (void)verifyTransaction:(SKPaymentTransaction *)transaction
-                  success:(void (^)(NSDictionary *receipt))success
-                  failure:(void (^)(NSError *error))failure;
+//- (void)verifyTransaction:(SKPaymentTransaction *)transaction
+//                  success:(void (^)(NSDictionary *receipt))success
+//                  failure:(void (^)(NSError *error))failure;
 
 ///--------------------------------------------------
 /// @name Transaction Queue Observer Delegate Methods
