@@ -22,18 +22,13 @@
 
 #import "CargoBay.h"
 
-#import "AFHTTPClient.h"
-#import "AFJSONRequestOperation.h"
+#pragma mark Removed AFNetworking library due to lack of 32bit support(and I didnt use its functionality).
+//#import "AFHTTPClient.h"
+//#import "AFJSONRequestOperation.h"
 
 NSString * const CargoBarErrorDomain = @"CargoBarErrorDomain";
 
 static NSString * const kCargoBayReceiptVerificationBaseURLString = @"https://buy.itunes.apple.com/";
-
-typedef void (^CargoBayPaymentQueueProductSuccessBlock)(NSArray *products, NSArray *invalidIdentifiers);
-typedef void (^CargoBayPaymentQueueProductFailureBlock)(NSError *error);
-typedef void (^CargoBayPaymentQueueTransactionsBlock)(SKPaymentQueue *queue, NSArray *transactions);
-typedef void (^CargoBayPaymentQueueRestoreSuccessBlock)(SKPaymentQueue *queue);
-typedef void (^CargoBayPaymentQueueRestoreFailureBlock)(SKPaymentQueue *queue, NSError *error);
 
 static NSString * CBBase64EncodedStringFromData(NSData *data) {
     NSUInteger length = [data length];
@@ -78,15 +73,7 @@ static NSString * CBBase64EncodedStringFromData(NSData *data) {
 
 #pragma mark -
 
-@implementation CargoBay {
-@private
-    AFHTTPClient *_receiptVerificationClient;
-        
-    CargoBayPaymentQueueTransactionsBlock _paymentQueueTransactionsUpdated;
-    CargoBayPaymentQueueTransactionsBlock _paymentQueueTransactionsRemoved;
-    CargoBayPaymentQueueRestoreSuccessBlock _paymentQueueRestoreSuccessBlock;
-    CargoBayPaymentQueueRestoreFailureBlock _paymentQueueRestoreFailureBlock;
-}
+@implementation CargoBay
 
 + (CargoBay *)sharedManager {
     static CargoBay *_sharedManager = nil;
@@ -104,11 +91,11 @@ static NSString * CBBase64EncodedStringFromData(NSData *data) {
         return nil;
     }
     
-    _receiptVerificationClient = [[AFHTTPClient alloc] initWithBaseURL:[NSURL URLWithString:kCargoBayReceiptVerificationBaseURLString]];
-    [_receiptVerificationClient setDefaultHeader:@"Accept" value:@"application/json"];
-    [_receiptVerificationClient registerHTTPOperationClass:[AFJSONRequestOperation class]];
-    [AFJSONRequestOperation addAcceptableContentTypes:[NSSet setWithObject:@"text/plain"]];
-        
+//    _receiptVerificationClient = [[AFHTTPClient alloc] initWithBaseURL:[NSURL URLWithString:kCargoBayReceiptVerificationBaseURLString]];
+//    [_receiptVerificationClient setDefaultHeader:@"Accept" value:@"application/json"];
+//    [_receiptVerificationClient registerHTTPOperationClass:[AFJSONRequestOperation class]];
+//    [AFJSONRequestOperation addAcceptableContentTypes:[NSSet setWithObject:@"text/plain"]];
+    
     return self;
 }
 
@@ -144,26 +131,26 @@ static NSString * CBBase64EncodedStringFromData(NSData *data) {
     [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
 }
 
-- (void)productsWithRequest:(NSURLRequest *)request
-                    success:(void (^)(NSArray *products, NSArray *invalidIdentifiers))success
-                    failure:(void (^)(NSError *error))failure
-{
-    if (!_productsHTTPClient) {
-        return;
-    }
-    
-    AFHTTPRequestOperation *operation = [_productsHTTPClient HTTPRequestOperationWithRequest:request success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        if (success && [responseObject isKindOfClass:[NSArray class]]) {
-            [self productsWithIdentifiers:[NSSet setWithArray:responseObject] success:success failure:failure];
-        }
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        if (failure) {
-            failure(error);
-        }
-    }];
-
-    [_productsHTTPClient.operationQueue addOperation:operation];
-}
+//- (void)productsWithRequest:(NSURLRequest *)request
+//                    success:(void (^)(NSArray *products, NSArray *invalidIdentifiers))success
+//                    failure:(void (^)(NSError *error))failure
+//{
+//    if (!_productsHTTPClient) {
+//        return;
+//    }
+//    
+//    AFHTTPRequestOperation *operation = [_productsHTTPClient HTTPRequestOperationWithRequest:request success:^(AFHTTPRequestOperation *operation, id responseObject) {
+//        if (success && [responseObject isKindOfClass:[NSArray class]]) {
+//            [self productsWithIdentifiers:[NSSet setWithArray:responseObject] success:success failure:failure];
+//        }
+//    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+//        if (failure) {
+//            failure(error);
+//        }
+//    }];
+//
+//    [_productsHTTPClient.operationQueue addOperation:operation];
+//}
 
 - (void)verifyTransaction:(SKPaymentTransaction *)transaction
                   success:(void (^)(NSDictionary *receipt))success

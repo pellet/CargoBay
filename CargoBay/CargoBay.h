@@ -23,11 +23,25 @@
 #import <Foundation/Foundation.h>
 #import <StoreKit/StoreKit.h>
 
-@class AFHTTPClient;
+//@class AFHTTPClient;
 
-@interface CargoBay : NSObject <SKPaymentTransactionObserver>
+typedef void (^CargoBayPaymentQueueProductSuccessBlock)(NSArray *products, NSArray *invalidIdentifiers);
+typedef void (^CargoBayPaymentQueueProductFailureBlock)(NSError *error);
+typedef void (^CargoBayPaymentQueueTransactionsBlock)(SKPaymentQueue *queue, NSArray *transactions);
+typedef void (^CargoBayPaymentQueueRestoreSuccessBlock)(SKPaymentQueue *queue);
+typedef void (^CargoBayPaymentQueueRestoreFailureBlock)(SKPaymentQueue *queue, NSError *error);
 
-@property (nonatomic) AFHTTPClient *productsHTTPClient;
+@interface CargoBay : NSObject <SKPaymentTransactionObserver> {
+@private
+//    AFHTTPClient *_receiptVerificationClient;
+    
+    CargoBayPaymentQueueTransactionsBlock _paymentQueueTransactionsUpdated;
+    CargoBayPaymentQueueTransactionsBlock _paymentQueueTransactionsRemoved;
+    CargoBayPaymentQueueRestoreSuccessBlock _paymentQueueRestoreSuccessBlock;
+    CargoBayPaymentQueueRestoreFailureBlock _paymentQueueRestoreFailureBlock;
+}
+
+//@property (nonatomic) AFHTTPClient *productsHTTPClient;
 
 + (CargoBay *)sharedManager;
 
@@ -39,9 +53,9 @@
                         success:(void (^)(NSArray *products, NSArray *invalidIdentifiers))success
                         failure:(void (^)(NSError *error))failure;
 
-- (void)productsWithRequest:(NSURLRequest *)request
-                    success:(void (^)(NSArray *products, NSArray *invalidIdentifiers))success
-                    failure:(void (^)(NSError *error))failure;
+//- (void)productsWithRequest:(NSURLRequest *)request
+//                    success:(void (^)(NSArray *products, NSArray *invalidIdentifiers))success
+//                    failure:(void (^)(NSError *error))failure;
 
 ///-------------------------------
 /// @name Product Purchase
