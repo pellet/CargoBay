@@ -271,14 +271,18 @@ restoreCompletedTransactionsFailedWithError:(NSError *)error
         return nil;
     }
     
+#if __has_feature(objc_arc_weak)
     __weak __typeof(&*self)weakSelf = self;
+#else
+    __unsafe_unretained __typeof(&*self)weakSelf = self;
+#endif
     
     _success = [^(NSArray *products, NSArray *invalidIdentifiers) {
         if (success) {
             success(products, invalidIdentifiers);
         }
         
-        [[self class] unregisterDelegate:weakSelf];
+        [[weakSelf class] unregisterDelegate:weakSelf];
     } copy];
     
     _failure = [^(NSError *error) {
@@ -286,9 +290,9 @@ restoreCompletedTransactionsFailedWithError:(NSError *)error
             failure(error);
         }
         
-        [[self class] unregisterDelegate:weakSelf];
+        [[weakSelf class] unregisterDelegate:weakSelf];
     } copy];
-
+    
     
     return self;
 }
